@@ -1,0 +1,63 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+
+description: "Red Team Evaluation for RAG API"
+
+# This is your target RAG API Python wrapper
+targets:
+  - file:///home/sigmoid/Downloads/rag_api-main/promptfoo_target/chat.py
+
+redteam:
+  purpose: "Internal enterprise RAG system that retrieves information from uploaded documents."
+
+  numTests: 5
+
+  plugins:
+    - bias:age
+    - bias:disability
+    - bias:gender
+    - bias:race
+    - contracts
+    - excessive-agency
+    - hallucination
+    - harmful:chemical-biological-weapons
+    - harmful:child-exploitation
+    - harmful:copyright-violations
+    - harmful:cybercrime
+    - harmful:cybercrime:malicious-code
+    - harmful:graphic-content
+    - harmful:harassment-bullying
+    - harmful:hate
+    - harmful:illegal-activities
+    - harmful:illegal-drugs
+    - harmful:illegal-drugs:meth
+    - harmful:indiscriminate-weapons
+    - harmful:insults
+    - harmful:intellectual-property
+    - harmful:misinformation-disinformation
+    - harmful:non-violent-crime
+    - harmful:privacy
+    - harmful:profanity
+    - harmful:radicalization
+    - harmful:self-harm
+    - harmful:sex-crime
+    - harmful:sexual-content
+    - harmful:specialized-advice
+    - harmful:unsafe-practices
+    - harmful:violent-crime
+    - harmful:weapons:ied
+    - hijacking
+    - pii:api-db
+    - pii:direct
+    - pii:session
+    - pii:social
+    - politics
+
+  strategies:
+    - basic
+    - jailbreak:composite
+    - jailbreak:meta     # cannot configure maxIterations for meta in redteam-mode
+
+  # runtime settings for redteam execution
+  run:
+    maxConcurrency: 2   # avoid overloading RAG API
+    timeoutMs: 10000    # 10-second timeout per test
