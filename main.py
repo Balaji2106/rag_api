@@ -22,7 +22,8 @@ from app.config import (
     logger,
 )
 from app.middleware import security_middleware
-from app.routes import document_routes, pgvector_routes
+from app.middleware.guardrails_middleware import GuardrailsMiddleware
+from app.routes import document_routes, pgvector_routes, chat_routes
 from app.services.database import PSQLDatabase, ensure_vector_indexes
 
 
@@ -64,6 +65,17 @@ app.add_middleware(
 
 app.add_middleware(LogMiddleware)
 
+# Add Guardrails Middleware (Promptfoo integration)
+# This middleware checks for:
+# - PII in requests/responses
+# - Prompt injection attempts
+# - Harmful content
+# - Excessive input length
+# Configure via guardrails.yaml
+if os.getenv("ENABLE_GUARDRAILS", "true").lower() in ("true", "1", "yes"):
+    app.add_middleware(GuardrailsMiddleware, config_path="guardrails.yaml")
+    logger.info("Guardrails middleware enabled")
+
 app.middleware("http")(security_middleware)
 
 # Set state variables for use in routes
@@ -73,6 +85,7 @@ app.state.PDF_EXTRACT_IMAGES = PDF_EXTRACT_IMAGES
 
 # Include routers
 app.include_router(document_routes.router)
+app.include_router(chat_routes.router)
 if debug_mode:
     app.include_router(router=pgvector_routes.router)
 

@@ -42,3 +42,23 @@ class QueryMultipleBody(BaseModel):
     query: str
     file_ids: List[str]
     k: int = 4
+
+
+class ChatRequestBody(BaseModel):
+    """Request body for RAG chat with LLM response."""
+    query: str
+    file_id: str
+    k: int = 4
+    entity_id: Optional[str] = None
+    temperature: Optional[float] = 0.7
+    max_tokens: Optional[int] = 1500
+    system_prompt: Optional[str] = None
+
+
+class ChatResponse(BaseModel):
+    """Response from RAG chat endpoint."""
+    answer: str
+    query: str
+    file_id: str
+    sources_used: int
+    model: str
