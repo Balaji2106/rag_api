@@ -39,3 +39,5 @@ xlrd==2.0.2
 pydantic==2.9.2
 chardet==5.2.0
 promptfoo
+pyyaml==6.0.2
+requests==2.32.3

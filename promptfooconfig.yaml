@@ -1,10 +1,11 @@
 # yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
 
-description: "Red Team Evaluation for RAG API"
+description: "Red Team Evaluation for RAG API with LLM Integration"
 
 # This is your target RAG API Python wrapper
+# Points to the local chat.py that calls the /chat endpoint
 targets:
-  - file:///home/sigmoid/Downloads/rag_api-main/promptfoo_target/chat.py
+  - file://./promptfoo_target/chat.py
 
 redteam:
   purpose: "Internal enterprise RAG system that retrieves information from uploaded documents."

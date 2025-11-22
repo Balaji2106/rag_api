@@ -1,0 +1,112 @@
+# guardrails.yaml
+# Promptfoo-style guardrails configuration for RAG API
+# This file defines safety policies and content moderation rules
+
+description: "Guardrails configuration for RAG API with promptfoo integration"
+
+# Enable/disable guardrails
+enabled: true
+
+# Mode: strict, moderate, or permissive
+# - strict: Block any violation
+# - moderate: Block only high-severity violations
+# - permissive: Log violations but don't block
+mode: moderate
+
+# Input validation checks
+input_checks:
+  # Detect Personal Identifiable Information (PII)
+  pii_detection: true
+
+  # Detect prompt injection attempts
+  prompt_injection: true
+
+  # Detect harmful content requests
+  harmful_content: true
+
+  # Check for excessive input length
+  excessive_length: true
+  max_length: 10000  # characters
+
+# Output validation checks
+output_checks:
+  # Check for PII in responses
+  pii_leakage: true
+
+  # Check for harmful content in responses
+  harmful_content: true
+
+  # Hallucination detection (requires special setup)
+  hallucination_detection: false
+
+# Endpoints that bypass guardrails
+allowed_endpoints:
+  - /health
+  - /docs
+  - /openapi.json
+  - /redoc
+
+# Custom blocked patterns (regex)
+blocked_patterns:
+  - pattern: "password\\s*[:=]\\s*['\"]?\\w+"
+    severity: high
+    message: "Password detected in request"
+
+  - pattern: "secret\\s*[:=]\\s*['\"]?\\w+"
+    severity: high
+    message: "Secret detected in request"
+
+# Logging configuration
+logging:
+  log_violations: true
+  log_level: warning
+
+# Integration with promptfoo red-teaming
+promptfoo:
+  # Enable automatic red-team testing
+  enable_redteam: true
+
+  # Plugins to use (matches promptfooconfig.yaml)
+  plugins:
+    - harmful:harassment-bullying
+    - harmful:hate
+    - harmful:sexual-content
+    - harmful:privacy
+    - harmful:profanity
+    - pii:direct
+    - pii:session
+    - pii:api-db
+    - prompt-injection
+    - excessive-agency
+    - hallucination
+    - hijacking
+
+  # Strategies
+  strategies:
+    - basic
+    - jailbreak:composite
+    - jailbreak:crescendo
+
+# Content moderation thresholds
+thresholds:
+  # Toxicity score (0.0 - 1.0)
+  toxicity: 0.7
+
+  # Confidence threshold for blocking
+  confidence: 0.8
+
+# Rate limiting (optional)
+rate_limiting:
+  enabled: false
+  max_requests_per_minute: 60
+  max_requests_per_hour: 1000
+
+# Custom validators (Python functions to call)
+custom_validators: []
+
+# Alerting configuration
+alerts:
+  # Send alerts on high-severity violations
+  enabled: false
+  webhook_url: null
+  severity_threshold: high
